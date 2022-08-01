@@ -1,0 +1,41 @@
+<launch>
+    <arg name="robot" default="$(optenv ROBOT NO_ENV_VAR__ROBOT__)" doc="robot name for gain tuning, do not specify for remote gain tuning"/>
+    <arg name="machine_ip" default="127.0.0.1" doc="The ip address of the remote machine, default 127.0.0.1"/>
+    <arg name="setup_script" default="/opt/ros/'$ROS_DISTRO'/env.sh" doc="The setup script for remote launch to initialize from, default /opt/ros/'$ROS_DISTRO'/env.sh"/>
+    <arg name="global_planner" default="global_planner/GlobalPlanner" doc="global planner for path generation, default global_planner/GlobalPlanner"/>
+    <arg name="visualization" default="true" doc="RVIZ visualization"/>
+
+    <arg name="use_remote_machine" value="$(eval arg('machine_ip') != '127.0.0.1')"/>
+    <arg name="use_default_global_planner" value="$(eval arg('global_planner') == 'global_planner/GlobalPlanner')"/>
+
+    <machine name="MACHINE" address="$(arg machine_ip)" default="never" env-loader="$(arg setup_script)" user="gyro"/>
+    <node machine="MACHINE" pkg="tony_local_planner" type="runtime_param_loading.sh" name="runtime_param_loading" args="$(arg robot)"/>
+    <node machine="MACHINE" pkg="tony_local_planner" type="check_localization_needed.sh" name="amcl_and_map_server" args="true $(arg robot)"/>
+    <node machine="MACHINE" pkg="tony_local_planner" type="gain_tuning_helper.py" name="gain_tuning_helper" output="screen" required="true" ns="move_base/TonyLocalPlanner">
+        <param name="robot" value="$(arg robot)"/>
+    </node>
+    <node machine="MACHINE" pkg="move_base" type="move_base" name="move_base" output="screen">
+        <param name="tuning_mode" value="true"/>
+
+        <!-- This orientation mode generates the closest behaviour compare to PubPlanner -->
+        <param name="GlobalPlanner/orientation_mode" value="0" type="int" if="$(arg use_default_global_planner)"/>
+        <param name="base_global_planner" value="$(arg global_planner)"/>
+
+        <rosparam file="$(find tony_local_planner)/param/move_base.yaml" command="load"/>
+        <rosparam file="$(find tony_local_planner)/param/ranger_sensor.yaml" command="load" ns="global_costmap/obstacle_layer"/>
+        <rosparam file="$(find tony_local_planner)/param/ranger_sensor.yaml" command="load" ns="local_costmap/obstacle_layer"/>
+
+        <remap from="cmd_vel" to="nav_vel"/>
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tony_local_planner)/rviz/tony_local_planner.rviz" if="$(arg visualization)"/>
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" args="/move_base/TonyLocalPlanner" launch-prefix="bash -c 'sleep 3.0; $0 $@' "/>
+
+    <arg name="nav_vel_msg" value="/nav_vel/linear/x /nav_vel/linear/y /nav_vel/angular/z"/>
+    <arg name="final_vel_msg" value="/final_vel/linear/x /final_vel/linear/y /final_vel/angular/z"/>
+    <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" args="-s rqt_plot --args topics $(arg nav_vel_msg) $(arg final_vel_msg)" launch-prefix="bash -c 'sleep 3.0; $0 $@'"/>
+
+    <group ns="move_base">
+        <param name="global_costmap/obstacle_layer/observation_sources" value="urg_front urg_back"/>
+    </group>
+</launch>

@@ -1,0 +1,56 @@
+robot_base_frame: base_footprint
+transform_tolerance: 0.4
+update_frequency: 1.0
+publish_frequency: 1.0
+obstacle_range: 3.0
+raytrace_range: 4.0
+#mark_threshold: 1
+# publish_voxel_map: true
+navigation_map:
+  map_topic: /map
+  track_unknown_space: true
+  # trinary_costmap: false
+  # lethal_cost_threshold: 100
+obstacles:
+  enabled: false
+  observation_sources: urg_front urg_back
+  track_unknown_space: true
+  combination_method: Maximum
+  urg_front:
+    observation_persistence: 0
+    expected_update_rate: 30
+    clearing: true
+    data_type: LaserScan
+    marking: true
+    sensor_frame: urg_front
+    topic: /urg_front/scan
+  urg_back:
+    observation_persistence: 0
+    expected_update_rate: 30
+    clearing: true
+    data_type: LaserScan
+    marking: true
+    sensor_frame: urg_back
+    topic: /urg_back/scan
+  stage:
+    observation_persistence: 0
+    expected_update_rate: 10
+    clearing: true
+    data_type: LaserScan
+    marking: true
+    sensor_frame: base_laser_link
+    topic: /scan
+virtual_walls:
+  map_topic: /virtual_walls/map
+  use_maximum: true
+  track_unknown_space: true
+prefer_zone:
+  map_topic: /prefer_zone/map
+  use_maximum: true
+  trinary_costmap: false
+  track_unknown_space: true
+not_prefer_zone:
+  map_topic: /not_prefer_zone/map
+  use_maximum: true
+  trinary_costmap: false
+  track_unknown_space: true

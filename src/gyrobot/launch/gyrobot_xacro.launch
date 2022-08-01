@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+
+
+<launch>
+
+<!-- ################|   2 arg    |###########-->
+  <arg name="gmapping" default="false" />
+  <arg name="rviz" default="false" />
+
+<!--###################### load world for gazebo #########################-->  
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find aws_robomaker_small_warehouse_world)/worlds/no_roof_small_warehouse.world"/>
+  </include>
+
+  <!-- ################################# load urdf file #####################################3-->
+  <param name="robot_description" command="$(find xacro)/xacro  $(find gyrobot)/urdf/gyrobot.urdf.xacro" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y -0 -z 0 -model gyrobot" />
+
+  <!--############################## load controller #########################-->
+  <rosparam command="load" file="$(find gyrobot)/config/control.yaml" />
+  <node name="base_controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="robot_base_joint_publisher "/>
+  <!-- <node name="base_controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="robot_base_joint_publisher robot_base_velocity_controller" /> -->
+
+  <!-- ############################## convert joint  states to TF transforms for rviz#############################-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <!-- ############################# rviz ############################-->
+  <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find gyrobot_navigation)/rviz/nav.rviz" required="true" />
+
+<!-- #########################   Filter imu data, provide orientation message ############################### -->
+  <!-- <node pkg="imu_filter_madgwick" type="imu_filter_node" name="ImuFilter">
+      <param name="use_mag" type="bool" value="false" />
+      <param name="_publish_tf" type="bool" value="false" />
+      <param name="_world_frame" type="string" value="enu" />
+      <remap from="/imu/data_raw" to="imu_data"/>
+      <remap from="/imu/data" to="filtered_imu_data"/>
+  </node> -->
+
+
+<!-- ############################   add some noise to odom ################################### -->
+  <node name="noise_adder" type="perception.py" pkg="heist" args="/odom /odom_with_noise 0.05 0.05 0.01" />
+
+<!-- ############################## robot_localization publish topic /odometry_filtered ####################################### -->
+  <include file="$(find robot_localization)/launch/ekf_template.launch"/>
+
+
+<!--##################################### laser mixed 3###########################33-->
+  <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+    <param name="destination_frame" value="base_link"/>
+    <param name="cloud_destination_topic" value="/scan_clound"/>
+    <param name="scan_destination_topic" value="/scan"/>
+    <param name="laserscan_topics" value ="/urg_front/scan /urg_back/scan" /> <!-- LIST OF THE LASER SCAN TOPICS TO SUBSCRIBE -->
+    <param name="angle_min" value="-3.1415926"/>
+    <param name="angle_max" value="3.1415926"/>
+    <param name="angle_increment" value="0.0058"/>
+    <param name="scan_time" value="0.1"/>
+    <param name="range_min" value="0.3"/>
+    <param name="range_max" value="30"/>
+  </node>
+  
+  <!--###############################3 gmapping for building map ###########################3-->
+  <group if="$(arg gmapping)">
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="map_update_interval" value="5.0"/>
+    <param name="maxUrange" value="16.0"/>
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="srr" value="0.1"/>
+    <param name="srt" value="0.2"/>
+    <param name="str" value="0.1"/>
+    <param name="stt" value="0.2"/>
+    <param name="linearUpdate" value="1.0"/>
+    <param name="angularUpdate" value="0.5"/>
+    <param name="temporalUpdate" value="3.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="30"/>
+    <param name="xmin" value="-50.0"/>
+    <param name="ymin" value="-50.0"/>
+    <param name="xmax" value="50.0"/>
+    <param name="ymax" value="50.0"/>
+    <param name="delta" value="0.05"/>
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+  </node>
+  </group>
+
+
+
+<!--    #####################  robot_pose_ekf ############################ -->
+  <!-- <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+    <param name="output_frame" value="odom"/>
+    <param name="base_footprint_frame" value="base_footprint"/>
+    <param name="freq" value="30.0"/>
+    <param name="sensor_timeout" value="1.0"/>
+    <param name="odom_used" value="true"/>
+    <param name="imu_used" value="true"/>
+    <param name="vo_used" value="false"/>
+    <param name="debug" value="false"/>
+    <param name="self_diagnose" value="false"/>
+  </node>
+
+  <node pkg="rbx1_bringup" type="odom_ekf.py" name="odom_ekf" output="screen">
+   	<remap from="input" to="/robot_pose_ekf/odom_combined"/>
+   	<remap from="output" to="/odom_ekf"/>
+  </node> -->
+
+<!-- ##################################################################### -->
+</launch>

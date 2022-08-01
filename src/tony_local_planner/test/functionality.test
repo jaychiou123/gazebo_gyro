@@ -1,0 +1,13 @@
+<launch>
+  <arg name="robot"/>
+  <arg name="visualization" default="false"/>
+  <arg name="global_planner" default="dummy_global_planner::DummyGlobalPlanner"/>
+  <include file="$(find tony_local_planner)/launch/simulation.launch">
+    <arg name="global_planner" value="$(arg global_planner)"/>
+    <arg name="robot" value="$(arg robot)"/>
+    <arg name="visualization" value="$(arg visualization)"/>
+  </include>
+  <test test-name="test" pkg="tony_local_planner" type="functionality_test" time-limit="500.0">
+    <param name="common_test_set_dir" value="$(find tony_local_planner)/test/test_set"/>
+  </test>
+</launch>

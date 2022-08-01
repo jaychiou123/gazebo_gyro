@@ -1,0 +1,15 @@
+max_available_curvature: 10.0
+max_lookahead_distance: 10.0
+max_vel_move_theta: 0.4
+max_vel_x: 0.5
+max_vel_y: 0.5
+move_yaw_goal_tolerance: 0.0
+off_track_condition: 1.0
+off_track_error_condition: 5.0
+transform_tolerance: 0.5
+virtual_heading: 0.0
+x_direction_pid: '[ 0.6, 0.7, 0]'
+xy_goal_tolerance: 0.1
+y_direction_pid: '[ 0.7, 0.375, 0]'
+yaw_direction_pid: '[ 1.5, 0.5, 0.5]'
+yaw_goal_tolerance: 0.05

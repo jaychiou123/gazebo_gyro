@@ -1,0 +1,13 @@
+<launch>
+  
+  <arg name="x" default="1.0"/>
+  <arg name="z" default="-0.78"/>
+  <!-- <arg name="w" default="1"/> -->
+  <param name="x_direction" value="$(arg x)" />
+  <param name="z_qu" value="$(arg z)" />
+  <!-- <param name="w_qu" value="$(arg w)" /> -->
+  <node pkg="simple_navigation_goals" name="simple_navigation_goals" type="simple_navigation_goals" />
+
+   
+
+</launch>

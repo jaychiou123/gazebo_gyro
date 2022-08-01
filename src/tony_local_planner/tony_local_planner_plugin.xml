@@ -1,0 +1,9 @@
+<library path="lib/libtony_local_planner">
+  <class name="tony_local_planner/TonyLocalPlanner" type="tony_local_planner::TonyLocalPlanner" base_class_type="nav_core::BaseLocalPlanner">
+    <description> A custom local planner for omnidirectional robot </description>
+  </class>
+</library>
+<library path="lib/libdummy_global_planner">
+  <class type="dummy_global_planner::DummyGlobalPlanner" base_class_type="nav_core::BaseGlobalPlanner">
+  </class>
+</library>

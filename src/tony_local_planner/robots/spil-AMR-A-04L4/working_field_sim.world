@@ -1,0 +1,17 @@
+include "../../stage/robots/omnidir_robot.inc"
+include "../../stage/environment.inc"
+
+floorplan
+(
+  name "working_field"
+  bitmap "working_field.png"
+  size [ 54.600 48.000 2.000 ]
+  pose [ 27.300 24.000 0.000 0.000 ]
+)
+
+# throw in a robot
+omnidir_robot
+(
+  pose [ 26.371 20.137 0.000 0.000 ]
+  name "robot"
+)

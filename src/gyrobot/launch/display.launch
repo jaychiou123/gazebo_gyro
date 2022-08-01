@@ -1,0 +1,17 @@
+<launch>
+
+  <arg name="model" default="$(find gyrobot)/urdf/gyrobot.urdf.xacro"/>
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find gyrobot)/rviz/urdf.rviz" />
+
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+  
+  <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+  <node unless="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <!--node name="rviz" pkg="rviz" type="rviz" /-->
+  
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find gyrobot)/config/gyro_config.rviz" required="true" />
+  <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find gyrobot_navigation)/rviz/nav.rviz" required="true" /-->
+</launch>
+

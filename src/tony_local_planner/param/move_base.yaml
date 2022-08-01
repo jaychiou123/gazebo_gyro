@@ -1,0 +1,108 @@
+base_local_planner: tony_local_planner::TonyLocalPlanner
+
+clearing_rotation_allowed: false
+recovery_behavior_enabled: false
+
+controller_frequency: 20.0 # The rate in Hz at which to run the control loop and send velocity commands to the base.
+controller_patience: 5.0 # How long the controller will wait in seconds without receiving a valid control before space-clearing operations are performed.
+planner_frequency: 0.0 # The rate in Hz at which to run the global planning loop. If the frequency is set to 0.0, the global planner will only run when a new goal is received or the local planner reports that its path is blocked.
+planner_patience: 100.0 # How long the planner will wait in seconds in an attempt to find a valid plan before space-clearing operations are performed.
+
+
+oscillation_timeout: 0.0
+oscillation_distance: 0.5
+
+max_planning_retries: -1
+
+recovery_behaviors: 
+  - {name: conservative_reset, type: clear_costmap_recovery/ClearCostmapRecovery}
+  - {name: rotate_recovery, type: rotate_recovery/RotateRecovery}
+  - {name: aggressive_reset, type: clear_costmap_recovery/ClearCostmapRecovery}
+
+conservative_reset:
+  reset_distance: 1.0
+  layer_names: ["obstacle_layer"]
+
+aggressive_reset:
+  reset_distance: 0.0
+  layer_names: ["obstacle_layer"]
+
+
+global_costmap:
+  footprint: [[0.65, 0.3],[-0.65,0.3],[-0.65,-0.3],[0.65,-0.3]]
+  footprint_padding: 0.01
+  global_frame: map
+  publish_frequency: 0.5
+  resolution: 0.05 # does not take effect, depends on static_layer
+  robot_base_frame: base_link
+  robot_radius: 0.01
+  transform_tolerance: 1.0
+  update_frequency: 0.5
+  origin_x: 0.0
+  origin_y: 0.0
+  map_cloud: {clearing: true, data_type: PointCloud2, marking: true, sensor_frame: base_link, topic: map_pointcloud}
+
+  plugins:
+  - {name: static_layer, type: 'costmap_2d::StaticLayer'}
+  - {name: obstacle_layer, type: 'costmap_2d::ObstacleLayer'}
+  - {name: inflation_layer, type: 'costmap_2d::InflationLayer'}
+  
+  static_layer:
+    enabled: true
+    map_topic: "map"
+    first_map_only: false
+    track_unknown_space: true
+    subscribe_to_updates: true
+    unknown_cost_value: -1
+    trinary_costmap: true
+
+  inflation_layer:
+    enabled: true
+    cost_scaling_factor: 10.0
+    inflation_radius: 1.6
+
+  obstacle_layer:
+    enabled: false
+    combination_method: 1
+    footprint_clearing_enabled: true
+    max_obstacle_height: 2.0
+    obstacle_range: 3.0
+    raytrace_range: 5.0
+    track_unknown_space: true
+    obstacle_range: 25.0
+    raytrace_range: 25.0
+
+local_costmap:
+  footprint: [[0.65, 0.3],[-0.65,0.3],[-0.65,-0.3],[0.65,-0.3]]
+  footprint_padding: 0.01
+  global_frame: odom
+  width: 1
+  height: 1
+  publish_frequency: 0.0
+  resolution: 0.05
+  robot_base_frame: base_link
+  robot_radius: 0.01
+  rolling_window: true
+  transform_tolerance: 1.0
+  update_frequency: 5.0
+
+  map_cloud: {clearing: true, data_type: PointCloud2, marking: true, sensor_frame: base_link, topic: map_pointcloud}
+
+  plugins:
+  - {name: obstacle_layer, type: 'costmap_2d::ObstacleLayer'}
+  - {name: inflation_layer, type: 'costmap_2d::InflationLayer'}
+
+  inflation_layer:
+    enabled: false
+    cost_scaling_factor: 0.0
+    inflation_radius: 1.6
+
+  obstacle_layer:
+    enabled: false
+    combination_method: 1
+    footprint_clearing_enabled: true
+    max_obstacle_height: 2.0
+    obstacle_range: 3.0
+    raytrace_range: 5.0
+    origin_x: 0.0
+    origin_y: 0.0

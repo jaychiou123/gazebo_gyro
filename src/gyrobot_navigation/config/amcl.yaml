@@ -1,0 +1,54 @@
+min_particles: 500   #允许的粒子数量的最小值，默认100
+max_particles: 5000 #允许的例子数量的最大值，默认5000
+kld_err: 0.01    #真实分布和估计分布之间的最大误差，默认0.01
+kld_z: 0.99   #上标准分位数（1-p），其中p是估计分布上误差小于kld_err的概率，默认0.99
+update_min_d: 0.02   #在执行滤波更新前平移运动的距离，默认0.2m
+update_min_a: 0.05   #执行滤波更新前旋转的角度，默认pi/6 rad
+resample_interval: 2   #在重采样前需要的滤波更新的次数,默认2
+transform_tolerance: 0.5  #tf变换发布推迟的时间，为了说明tf变换在未来时间内是可用的
+recovery_alpha_slow: 0.0 #慢速的平均权重滤波的指数衰减频率，用作决定什么时候通过增加随机位姿来recover，默认0（disable），可能0.001是一个不错的值
+recovery_alpha_fast: 0.0  #快速的平均权重滤波的指数衰减频率，用作决定什么时候通过增加随机位姿来recover，默认0（disable），可能0.1是个不错的值
+gui_publish_rate: 10.0  #扫描和路径发布到可视化软件的最大频率，设置参数为-1.0意为失能此功能，默认-1.0
+save_pose_rate: 0.5  #存储上一次估计的位姿和协方差到参数服务器的最大速率。被保存的位姿将会用在连续的运动上来初始化滤波器。-1.0失能。
+use_map_topic: false  #当设置为true时，AMCL将会订阅map话题，而不是调用服务返回地图。也就是说，当设置为true时，有另外一个节点实时的发布map话题，也就是机器人在实时的进行地图构建，并供给amcl话题使用；当设置为false时，通过map server，也就是调用已经构建完成的地图。在navigation 1.4.2中新加入的参数。
+first_map_only: false  #当设置为true时，AMCL将仅仅使用订阅的第一个地图，而不是每次接收到新的时更新为一个新的地图，在navigation 1.4.2中新加入的参数。
+
+#激光模型参数
+laser_min_range: -1.0  #被考虑的最小扫描范围；参数设置为-1.0时，将会使用激光上报的最小扫描范围
+laser_max_range: -1.0  #被考虑的最大扫描范围；参数设置为-1.0时，将会使用激光上报的最大扫描范围
+laser_max_beams: 30   #更新滤波器时，每次扫描中多少个等间距的光束被使用
+laser_z_hit: 0.95 #模型的z_hit部分的最大权值，默认0.95
+laser_z_short: 0.1 #模型的z_short部分的最大权值，默认0.1
+laser_z_max: 0.05 #模型的z_max部分的最大权值，默认0.05
+laser_z_rand: 0.05 #模型的z_rand部分的最大权值，默认0.05
+laser_sigma_hit: 0.2 #被用在模型的z_hit部分的高斯模型的标准差，默认0.2m
+laser_lambda_short: 0.1 #模型z_short部分的指数衰减参数，默认0.1
+laser_likehood_max_dist: 2.0 #地图上做障碍物膨胀的最大距离，用作likehood_field模型
+laser_model_type: likelihood_field #模型使用，可以是beam, likelihood_field, likelihood_field_prob （和likehood_field一样但是融合了beamskip特征），默认是“likehood_field”    
+
+#里程计模型参数
+odom_model_type: omni-corrected #模型使用，可以是"diff", "omni", "diff-corrected", "omni-corrected",后面两  个是对老版本里程计模型的矫正，相应的里程计参数需要做一定的减小
+odom_alpha1: 0.001 #指定由机器人运动部分的旋转分量估计的里程计旋转的期望噪声，默认0.2
+odom_alpha2: 0.05 #制定由机器人运动部分的平移分量估计的里程计旋转的期望噪声，默认0.2
+#<!-- translation std dev, m -->
+odom_alpha3: 0.05 #指定由机器人运动部分的平移分量估计的里程计平移的期望噪声，默认0.2
+odom_alpha4: 0.05 #指定由机器人运动部分的旋转分量估计的里程计平移的期望噪声，默认0.2
+odom_alpha5: 0.005 #平移相关的噪声参数（仅用于模型是“omni”的情况）
+odom_frame_id: odom  #里程计默认使用的坐标系
+base_frame_id: base_link  #用作机器人的基坐标系
+global_frame_id: map  #由定位系统发布的坐标系名称
+tf_broadcast: true  #设置为false阻止amcl发布全局坐标系和里程计坐标系之间的tf变换
+
+#机器人初始化数据设置
+initial_pose_x: 88.3 #初始位姿均值（x），用于初始化高斯分布滤波器。
+initial_pose_y: 69.8 #初始位姿均值（y），用于初始化高斯分布滤波器。
+initial_pose_a: 1.5 #初始位姿均值（yaw），用于初始化高斯分布滤波器。
+initial_cov_xx: 0.25 #初始位姿协方差（x*x），用于初始化高斯分布滤波器。
+initial_cov_yy: 0.25 #初始位姿协方差（y*y），用于初始化高斯分布滤波器。
+initial_cov_aa: 0.06853891945200943485301729861025 #初始位姿协方差（yaw*yaw），用于初始化高斯分布滤波器。
+
+laser_likelihood_max_dist: 2.0
+do_beamskip: true
+beam_skip_distance: 0.5
+beam_skip_threshold: 0.3
+beam_skip_error_threshold: 0.9

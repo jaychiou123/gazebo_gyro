@@ -1,0 +1,72 @@
+robot_base_joint_publisher:
+  type: "joint_state_controller/JointStateController"
+  publish_rate: 50
+  
+  
+# robot_base_velocity_controller:
+#   type: "diff_drive_controller/DiffDriveController"
+#   left_wheel: ['RL_wheel_joint', 'FL_wheel_joint']
+#   right_wheel: ['RR_wheel_joint', 'FR_wheel_joint']
+#   publish_rate: 50
+#   pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+#   twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+#   cmd_vel_timeout: 0.5
+#   wheel_radius : 0.10326
+#   base_frame_id: base_footprint
+#   odom_frame_id: odom
+#   enable_odom_tf: true
+#   estimate_velocity_from_position: false
+#   wheel_separation_multiplier: 1.0 
+#   wheel_radius_multiplier    : 1.0 
+
+# robot_base_velocity_controller_1:
+#   type: "four_wheel_steering_controller/FourWheelSteeringController"
+#   front_wheel: ['FL_wheel_joint','FR_wheel_joint']
+#   rear_wheel: ['RL_wheel_joint','RR_wheel_joint']
+#   publish_rate: 50
+#   WheelSeparationW: 0.5
+#   WheelSeparationL: 0.7
+#   cmd_vel_timeout: 0.5
+#   wheel_radius : 0.10326
+#   base_frame_id: base_footprint
+#   odom_frame_id: odom
+#   isRollerModel: true
+  #/gazebo_ros_control:
+    #pid_gains:
+      #RL_wheel_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #FL_wheel_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #RR_wheel_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #FR_wheel_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_1_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_2_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_3_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_4_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_5_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_6_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_7_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_1_8_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_1_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_2_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_3_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_4_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_5_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_6_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_7_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_2_8_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_1_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_2_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_3_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_4_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_5_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_6_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_7_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_3_8_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_1_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_2_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_3_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_4_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_5_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_6_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_7_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+      #rolloer_4_8_joint: {p: 20.0, i: 0.01, d: 0.0, i_clamp: 0.0}
+

@@ -1,0 +1,18 @@
+<launch>
+  <!-- Turtlesim Node-->
+  <node pkg="turtlesim" type="turtlesim_node" name="sim"/>
+
+  <!-- Axes -->
+  <param name="scale_linear" value="2" type="double"/>
+  <param name="scale_angular" value="2" type="double"/>
+
+  <node pkg="learning_tf2" type="turtle_tf2_broadcaster" args="/turtle1" name="turtle1_tf2_broadcaster" />
+  <node pkg="learning_tf2" type="turtle_tf2_broadcaster" args="/turtle2" name="turtle2_tf2_broadcaster" />
+
+  <node pkg="tf_move_relative" type="turtle_listener" name="turtle_listener" />
+
+  <node pkg="tf_move_relative" type="tf_move_relative" name="tf_move_relative">
+     <remap from="/cmd_vel" to="/turtle2/cmd_vel"/>
+  </node>
+  
+</launch>

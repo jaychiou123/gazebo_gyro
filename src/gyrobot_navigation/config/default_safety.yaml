@@ -1,0 +1,11 @@
+enable_safety: true
+max_x: 0.585
+min_x: -0.585
+max_y: 0.335
+min_y: -0.335
+max_z: 1.72
+min_z: 0.2
+look_ahead: 5.0
+maxAcceleration: 0.01
+space_before_stop: 0.20
+skip_size: 10

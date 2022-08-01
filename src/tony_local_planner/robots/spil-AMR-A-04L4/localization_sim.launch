@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="amcl" type="amcl" name="amcl" output="screen">
+    <rosparam file="$(find tony_local_planner)/param/amcl.yaml" command="load" />
+
+    <param name="initial_pose_x" value="26.371"/>
+    <param name="initial_pose_y" value="20.137"/>
+    <param name="initial_pose_a" value="0"/>
+  </node>
+
+  <node pkg="map_server" type="map_server" name="map_server" args="$(arg sim_dir)/working_field.yaml"/>
+</launch>

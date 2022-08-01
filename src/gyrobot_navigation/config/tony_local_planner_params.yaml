@@ -1,0 +1,30 @@
+base_local_planner: tony_local_planner::TonyLocalPlanner
+TonyLocalPlanner:
+  virtual_heading: 0
+
+  max_vel_x: 0.4
+  min_vel_x: 0.02
+  max_vel_y: 0.3
+  min_vel_y: 0.0
+  max_vel_theta: 0.5
+  min_vel_theta: 0.02
+  max_vel_move_theta: 0.8
+  min_vel_move_theta: 0.0
+  
+  acc_lim_x: 0.08
+  acc_lim_y: 0.01
+  acc_lim_theta: 0.08
+  acc_lim_move_theta: 0.01
+  
+  xy_goal_tolerance: 0.05
+  yaw_goal_tolerance: 0.05
+  move_yaw_goal_tolerance: 0.0
+  
+  min_lookahead: 0.3
+  max_lookahead: 1000000000
+  max_curvature: 1500000000
+  max_following_error: 0.7
+  
+  transform_tolerance: 4.0
+  
+  rotation_bias: 0

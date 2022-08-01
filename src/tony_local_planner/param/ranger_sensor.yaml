@@ -1,0 +1,28 @@
+# For simulation
+stage_laser:
+  topic: scan
+  sensor_frame: base_laser_link
+  observation_persistence: 0
+  expected_update_rate: 10
+  data_type: LaserScan
+  clearing: true
+  marking: true
+
+# For gain tuning
+urg_front:
+  topic: /urg_front/scan
+  sensor_frame: urg_front
+  observation_persistence: 0
+  expected_update_rate: 30
+  data_type: LaserScan
+  clearing: true
+  marking: true
+
+urg_back:
+  topic: /urg_back/scan
+  sensor_frame: urg_back
+  observation_persistence: 0
+  expected_update_rate: 30
+  data_type: LaserScan
+  clearing: true
+  marking: true

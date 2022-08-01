@@ -1,0 +1,65 @@
+<?xml version = "1.0"?>
+<robot xmlns:xacro= "http://www.ros.org/wiki/xacro">
+
+<!--######################################################################-->
+
+<xacro:macro name = "wheel_roller" params = "prefix parent originxy rotation_x rotation_z">
+	<link name="${prefix}_link">
+	  <visual>
+		<geometry>
+		  <mesh filename="package://gyrobot/meshes/mecanum_roller.stl" scale="0.01 0.01 0.01"/>
+		</geometry>
+		<material name="orange"/>
+	  </visual>
+	  <collision>
+		<geometry>
+		  <mesh filename="package://gyrobot/meshes/mecanum_roller.stl" scale="0.01 0.01 0.01"/>
+		</geometry>
+	  </collision>
+	  <inertial>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="1.13"/>
+        <inertia ixx="0.00118" ixy="0.0" ixz="0.0" iyy="0.00118" iyz="0.0" izz="0.00025"/>
+	  </inertial>
+	</link>
+	
+	
+	<joint name="${prefix}_joint" type="fixed">
+	  <parent link="${parent}"/>
+	  <child link="${prefix}_link"/>
+	  <origin xyz="${originxy} 0" rpy="${rotation_x} 0 ${rotation_z}"/>
+	</joint>
+  </xacro:macro>
+  
+  <!--######################################################################-->
+  
+  <xacro:macro name="roller_friction" params="prefix">
+	<gazebo reference="${prefix}_link">
+	  <selfCollide>true</selfCollide>
+	  <gravity>true</gravity>
+	    <mu1>20</mu1>
+	    <mu2>20</mu2>
+	    <kp>1e50</kp>
+	    <kd>1e50</kd>
+	  <material>Gazebo/Orange</material>
+	</gazebo>
+	</xacro:macro>
+
+<!--######################################################################-->
+	  
+<!--xacro:macro name="roller_transmission" params="prefix ">
+
+<transmission name="${prefix}_trans" type="SimpleTransmission">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="${prefix}_motor">
+   <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+   <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="${prefix}_joint">
+   <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+</xacro:macro-->
+
+<!--######################################################################-->
+</robot>

@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="tony_local_planner" type="standalone_local_planner" name="move_base" output="screen"/>
+    <test test-name="test" pkg="tony_local_planner" type="interface_test" time-limit="20.0"/>
+</launch>

@@ -1,0 +1,71 @@
+<launch>
+
+  <env name="GAZEBO_MODEL_PATH" value="$(find heist)/models:$(optenv GAZEBO_MODEL_PATH)" />
+
+  <!-- set params for initialization -->
+  <param name="szenario" value="map_2"/>
+  <arg name="model" default="burger"/>
+  <arg name="first_tb3"  default="guard"/>
+  <arg name="second_tb3" default="evader"/>
+
+  <!-- guard start position -->
+  <arg name="first_tb3_x_pos" default=" 0.0"/>
+  <arg name="first_tb3_y_pos" default=" 2.0"/>
+  <arg name="first_tb3_z_pos" default=" 0.0"/>
+  <arg name="first_tb3_yaw"   default=" 0.0"/>
+  <param name="guard_start_pos_x" value="$(arg first_tb3_x_pos)"/>
+  <param name="guard_start_pos_y" value="$(arg first_tb3_y_pos)"/>
+
+  <!-- evader start position -->
+  <arg name="second_tb3_x_pos" default=" 4.5"/>
+  <arg name="second_tb3_y_pos" default=" 0.0"/>
+  <arg name="second_tb3_z_pos" default=" 0.0"/>
+  <arg name="second_tb3_yaw"   default=" 1.57"/>
+  <param name="evader_start_pos_x" value="$(arg second_tb3_x_pos)"/>
+  <param name="evader_start_pos_y" value="$(arg second_tb3_y_pos)"/>
+
+  <!-- empty world simulation -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find heist)/worlds/map_2.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>  
+
+
+  <!-- guard -->
+  <group ns = "$(arg first_tb3)">
+    <param name="robot_description" command="$(find xacro)/xacro $(find heist)/urdf/turtlebot3_$(arg model)_red.urdf.xacro" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+      <param name="publish_frequency" type="double" value="50.0" />
+      <param name="tf_prefix" value="$(arg first_tb3)" />
+    </node>
+    
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model $(arg first_tb3) -x $(arg first_tb3_x_pos) -y $(arg first_tb3_y_pos) -z $(arg first_tb3_z_pos) -Y $(arg first_tb3_yaw) -param robot_description" />   
+    
+    <node name="guard_perception" type="perception.py" pkg="heist" args="/evader/odom /guard/perception_of_evader 1.0 1.0" /> 
+  </group>
+
+
+  <!-- evader -->
+  <group ns = "$(arg second_tb3)">
+    <param name="robot_description" command="$(find xacro)/xacro $(find heist)/urdf/turtlebot3_$(arg model)_green.urdf.xacro" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+      <param name="publish_frequency" type="double" value="50.0" />
+      <param name="tf_prefix" value="$(arg second_tb3)" />
+    </node>
+
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model $(arg second_tb3) -x $(arg second_tb3_x_pos) -y $(arg second_tb3_y_pos) -z $(arg second_tb3_z_pos) -Y $(arg second_tb3_yaw) -param robot_description" />
+    
+    <node name="evader_perception" type="perception.py" pkg="heist" args="/guard/odom /evader/perception_of_guard 1.0 1.0" />
+  </group>
+
+
+  <node name="map_2_setup" type="map_2_setup.py" pkg="heist"  />
+  <node name="heist_tracker" type="heist_tracker.py" pkg="heist"  /> 
+  <node name="heist_client" type="heist_client.py" pkg="heist"  />  
+  
+</launch>
