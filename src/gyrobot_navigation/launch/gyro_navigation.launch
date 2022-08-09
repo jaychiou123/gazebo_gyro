@@ -18,6 +18,14 @@
           args="-d $(find gyrobot_navigation)/rviz/nav.rviz"/>
   </group>
 
-   
+   <node name="pos_x_plot"
+        pkg="rqt_plot"
+        type="rqt_plot"
+        args="/odometry/filtered/pose/pose/position/x /odom/pose/pose/position/x /odom_diff/pose/pose/position/x" />
+
+  <node name="pos_y_plot"
+        pkg="rqt_plot"
+        type="rqt_plot"
+        args="/odometry/filtered/pose/pose/position/y /odom/pose/pose/position/y /odom_diff/pose/pose/position/y" />
 
 </launch>

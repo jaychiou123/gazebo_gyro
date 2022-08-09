@@ -21,16 +21,28 @@ class Perception:
         self.pose = [0.0,0.0,0.0]
         self.percepted_odom = Odometry()
         self.imu = Imu()
+        self.diff_odom = Odometry()
+
         rate = rospy.Rate(40.0)  # 0.5hz
         rospy.Subscriber(self.source_topic, Odometry, self.source_callback)
         rospy.Subscriber("imu_data", Imu, self.imu_callback)
+        rospy.Subscriber("odometry/filtered", Odometry, self.diff_callback)
+
         self.pub = rospy.Publisher(self.published_topic, Odometry, queue_size=10)
         self.pub1 = rospy.Publisher("imu_data_cov", Imu, queue_size=10)
+        self.pub2 = rospy.Publisher("odom_diff", Odometry, queue_size=10)
 
         while not rospy.is_shutdown():
             self.pub.publish(self.percepted_odom)
             self.pub1.publish(self.imu)
+            self.pub2.publish(self.diff_odom)
             rate.sleep()
+
+    def diff_callback(self, odom_filtered):
+        self.diff_odom.header = odom_filtered.header
+        self.diff_odom.child_frame_id = odom_filtered.child_frame_id
+        self.diff_odom.pose.pose.position.x = odom_filtered.pose.pose.position.x - self.last_odom.pose.pose.position.x 
+        self.diff_odom.pose.pose.position.y = odom_filtered.pose.pose.position.y - self.last_odom.pose.pose.position.y 
 
     def imu_callback(self, imu):
         self.imu.header = imu.header
@@ -40,9 +52,9 @@ class Perception:
         # self.imu.orientation_covariance = [100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 100.0]
         # self.imu.angular_velocity_covariance = [100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 0.0000008]  #pow(0.0475034, 2)
         # self.imu.linear_acceleration_covariance = [0.001, 0.0, 0.0, 0.0, 0.001, 0.0, 0.0, 0.0, 100.0]   # pow(0.000209338, 2)   pow(0.000254688, 2)
-        # self.imu.orientation_covariance = [100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 100.0]
-        # self.imu.angular_velocity_covariance = [100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, pow(0.0475034, 2)]  
-        # self.imu.linear_acceleration_covariance = [pow(0.000209338, 2), 0.0, 0.0, 0.0, pow(0.000254688, 2), 0.0, 0.0, 0.0, 100.0]   
+        self.imu.orientation_covariance = [100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 100.0]
+        self.imu.angular_velocity_covariance = [100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 0.000000008 ]  # 
+        self.imu.linear_acceleration_covariance = [0.00000001, 0.0, 0.0, 0.0, 100, 0.0, 0.0, 0.0, 100.0]   
         
     def source_callback(self, odom):
         q = [ odom.pose.pose.orientation.x,
@@ -91,16 +103,17 @@ class Perception:
         self.percepted_odom.pose.pose.orientation.y = quaternion[1]
         self.percepted_odom.pose.pose.orientation.z = quaternion[2]
         self.percepted_odom.pose.pose.orientation.w = quaternion[3]
-        # self.percepted_odom.twist.twist.linear.x = odom.twist.twist.linear.x + np.random.normal(0, 0.00001) 
-        # self.percepted_odom.twist.twist.linear.y = odom.twist.twist.linear.y + np.random.normal(0, 0.00001) 
-        # self.percepted_odom.twist.twist.angular.z = odom.twist.twist.angular.z + np.random.normal(0, 0.0000001) 
-        self.percepted_odom.twist.twist.linear.x = odom.twist.twist.linear.x + np.random.normal(0, 0.01) 
-        self.percepted_odom.twist.twist.linear.y = odom.twist.twist.linear.y + np.random.normal(0, 0.01) 
-        self.percepted_odom.twist.twist.angular.z = odom.twist.twist.angular.z + np.random.normal(0, 0.001) 
+        self.percepted_odom.twist.twist.linear.x = odom.twist.twist.linear.x + np.random.normal(0.00, 0.01) 
+        self.percepted_odom.twist.twist.linear.y = odom.twist.twist.linear.y + np.random.normal(0.00, 0.01) 
+        self.percepted_odom.twist.twist.angular.z = odom.twist.twist.angular.z + np.random.normal(0.00, 0.01) 
         self.percepted_odom.pose.covariance = odom.pose.covariance            # 0.001
         self.percepted_odom.twist.covariance = odom.pose.covariance
+        self.percepted_odom.twist.covariance = list(self.percepted_odom.twist.covariance)
+        self.percepted_odom.twist.covariance[35] = 0.00001
+        self.percepted_odom.twist.covariance = tuple(self.percepted_odom.twist.covariance)
         self.last_odom = odom
 
+        
 if __name__ == '__main__':
     rospy.init_node("Perception")
     try:

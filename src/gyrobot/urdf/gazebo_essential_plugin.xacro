@@ -17,7 +17,7 @@
       <commandTopic>/cmd_vel</commandTopic>
       <odometryTopic>/odom</odometryTopic>
       <odometryFrame>/odom</odometryFrame>
-      <odometryRate>20.0</odometryRate>
+      <odometryRate>50.0</odometryRate>
       <robotBaseFrame>base_footprint</robotBaseFrame>
     </plugin>
   </gazebo>
@@ -255,11 +255,31 @@
       <update_rate>20.0</update_rate>
       <visualize>true</visualize>
       <topic>__default_topic__</topic>
-      <noise>
-        <type>gaussian</type>
-        <mean>0.0</mean>
-        <stddev>0.01</stddev>
-      </noise>
+      <imu>
+        <angular_velocity>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0</stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0</stddev>
+            </noise>
+          </y>
+        </linear_acceleration>
+      </imu>
       <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
         <topicName>imu_data</topicName>
         <bodyName>d435_front_link</bodyName>

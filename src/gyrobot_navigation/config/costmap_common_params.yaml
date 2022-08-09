@@ -1,5 +1,5 @@
 robot_base_frame: base_footprint
-transform_tolerance: 0.4
+transform_tolerance: 0.5
 update_frequency: 1.0
 publish_frequency: 1.0
 obstacle_range: 3.0

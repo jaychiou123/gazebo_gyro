@@ -10,11 +10,12 @@
 <!--###################### load world for gazebo #########################-->  
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find aws_robomaker_small_warehouse_world)/worlds/no_roof_small_warehouse.world"/>
+    <!-- <arg name="world_name" value="$(find aws_robomaker_small_warehouse_world)/worlds/outdoor.world"/> -->
   </include>
 
   <!-- ################################# load urdf file #####################################3-->
   <param name="robot_description" command="$(find xacro)/xacro  $(find gyrobot)/urdf/gyrobot.urdf.xacro" />
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y -0 -z 0 -model gyrobot" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y -0 -z 0  -model gyrobot" />
 
   <!--############################## load controller #########################-->
   <rosparam command="load" file="$(find gyrobot)/config/control.yaml" />
